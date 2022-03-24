@@ -23,7 +23,8 @@ type Player struct {
 }
 
 type PlayerInput struct {
-	Name string `json:"name"`
+	Name     string `json:"name"`
+	Password string `json:"password"`
 }
 
 type RefreshTokenInput struct {

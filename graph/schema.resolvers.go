@@ -5,14 +5,37 @@ package graph
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/pballok/bchest-server/graph/generated"
 	"github.com/pballok/bchest-server/graph/model"
+	"github.com/pballok/bchest-server/internal/player"
+	"github.com/pballok/bchest-server/pkg/persist"
 )
 
 func (r *mutationResolver) CreatePlayer(ctx context.Context, input model.PlayerInput) (*model.Player, error) {
-	panic(fmt.Errorf("not implemented"))
+	_, playerAlreadyExists := persist.Players[input.Name]
+	if playerAlreadyExists {
+		return nil, errors.New("Cannot create new Player, Player Name already exists.")
+	}
+
+	hashedPassword, err := player.HashPassword(input.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	persist.Players[input.Name] = player.Player{
+		Name:           input.Name,
+		HashedPassword: hashedPassword,
+	}
+
+	err = persist.SavePlayers()
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Player{Name: input.Name}, nil
 }
 
 func (r *mutationResolver) CreateCharacter(ctx context.Context, input model.CharacterInput) (*model.Character, error) {

@@ -4,6 +4,7 @@ type Player {
 
 input PlayerInput {
   name: String!
+  password: String!
 }
 
 
