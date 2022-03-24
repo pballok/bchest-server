@@ -27,7 +27,7 @@ func (r *mutationResolver) RefreshToken(ctx context.Context, input model.Refresh
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) GetCharacter(ctx context.Context, id string) (*model.Character, error) {
+func (r *queryResolver) GetCharacter(ctx context.Context, name string) (*model.Character, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

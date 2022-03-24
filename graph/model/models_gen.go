@@ -3,7 +3,6 @@
 package model
 
 type Character struct {
-	ID          string  `json:"id"`
 	Name        string  `json:"name"`
 	Player      *Player `json:"player"`
 	Description *string `json:"description"`
@@ -20,7 +19,6 @@ type LoginInput struct {
 }
 
 type Player struct {
-	ID   string `json:"id"`
 	Name string `json:"name"`
 }
 
