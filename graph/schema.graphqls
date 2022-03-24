@@ -1,0 +1,42 @@
+type Player {
+  id: ID!
+  name: String!
+}
+
+input PlayerInput {
+  name: String!
+}
+
+
+type Character {
+  id: ID!
+  name: String!
+  player: Player
+  description: String
+}
+
+input CharacterInput {
+  name: String!
+  description: String
+}
+
+input LoginInput {
+  playername: String!
+  password: String!
+}
+
+input RefreshTokenInput {
+  token: String!
+}
+
+type Query {
+  getCharacter(id: ID!): Character
+  listCharacters(player: ID!): [Character!]!
+}
+
+type Mutation {
+  createPlayer(input: PlayerInput!): Player!
+  createCharacter(input: CharacterInput!): Character!
+  login(input: LoginInput!): String!
+  refreshToken(input: RefreshTokenInput!): String!
+}
