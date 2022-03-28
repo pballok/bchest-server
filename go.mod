@@ -3,7 +3,7 @@ module github.com/pballok/bchest-server
 go 1.17
 
 require (
-	github.com/99designs/gqlgen v0.17.1
+	github.com/99designs/gqlgen v0.17.2
 	github.com/vektah/gqlparser/v2 v2.4.0
 	golang.org/x/crypto v0.0.0-20220321153916-2c7772ba3064
 )
