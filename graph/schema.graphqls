@@ -1,15 +1,14 @@
 type Player {
-  id: ID!
   name: String!
 }
 
 input PlayerInput {
   name: String!
+  password: String!
 }
 
 
 type Character {
-  id: ID!
   name: String!
   player: Player
   description: String
@@ -30,8 +29,8 @@ input RefreshTokenInput {
 }
 
 type Query {
-  getCharacter(id: ID!): Character
-  listCharacters(player: ID!): [Character!]!
+  getCharacter(name: String!): Character
+  listCharacters(player: String!): [Character!]!
 }
 
 type Mutation {

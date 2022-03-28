@@ -9,10 +9,16 @@ import (
 
 	"github.com/pballok/bchest-server/graph/generated"
 	"github.com/pballok/bchest-server/graph/model"
+	"github.com/pballok/bchest-server/pkg/persist"
 )
 
 func (r *mutationResolver) CreatePlayer(ctx context.Context, input model.PlayerInput) (*model.Player, error) {
-	panic(fmt.Errorf("not implemented"))
+	err := persist.Players.AddNew(input.Name, input.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Player{Name: input.Name}, nil
 }
 
 func (r *mutationResolver) CreateCharacter(ctx context.Context, input model.CharacterInput) (*model.Character, error) {
@@ -27,7 +33,7 @@ func (r *mutationResolver) RefreshToken(ctx context.Context, input model.Refresh
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) GetCharacter(ctx context.Context, id string) (*model.Character, error) {
+func (r *queryResolver) GetCharacter(ctx context.Context, name string) (*model.Character, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
