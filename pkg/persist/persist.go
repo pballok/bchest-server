@@ -34,3 +34,7 @@ func (players *players) AddNew(name string, password string) error {
 
 	return nil
 }
+
+func (players *players) Purge() {
+	players.allPlayers = make(playerList)
+}

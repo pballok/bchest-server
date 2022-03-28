@@ -5,6 +5,8 @@ import (
 )
 
 func TestPlayerAddNew_PlayerAddedSuccessfully(t *testing.T) {
+	Players.Purge()
+
 	playerName := "Player1"
 	playerPassword := "Password1"
 	err := Players.AddNew(playerName, playerPassword)
@@ -15,6 +17,8 @@ func TestPlayerAddNew_PlayerAddedSuccessfully(t *testing.T) {
 }
 
 func TestPlayerAddNew_PlayerAddedWithExistingNameReturnsError(t *testing.T) {
+	Players.Purge()
+
 	playerName := "Player1"
 	playerPassword := "Password1"
 	err := Players.AddNew(playerName, playerPassword)
