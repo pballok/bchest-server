@@ -9,11 +9,13 @@ import (
 
 	"github.com/pballok/bchest-server/graph/generated"
 	"github.com/pballok/bchest-server/graph/model"
+	"github.com/pballok/bchest-server/internal/player"
 	"github.com/pballok/bchest-server/pkg/persist"
 )
 
 func (r *mutationResolver) CreatePlayer(ctx context.Context, input model.PlayerInput) (*model.Player, error) {
-	err := persist.Players.AddNew(input.Name, input.Password)
+	player, err := player.NewPlayer(input.Name, input.Password)
+	err = persist.InMemoryStorage.Players.AddNewItem(input.Name, player)
 	if err != nil {
 		return nil, err
 	}
