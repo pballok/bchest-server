@@ -19,7 +19,3 @@ query {
         description
     }
 }
-
-
-*** TODO ***
-Unit tests fail because there is no cleanup between tests

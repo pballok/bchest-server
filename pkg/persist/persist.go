@@ -1,40 +1,25 @@
 package persist
 
 import (
-	"errors"
-
-	"github.com/pballok/bchest-server/internal/player"
+	"github.com/pballok/bchest-server/pkg/player"
+	"golang.org/x/exp/constraints"
 )
 
-var Players = players{
-	allPlayers: playerList{},
+type storageItems[KeyType constraints.Ordered, ItemType any] interface {
+	AddNewItem(key KeyType, item *ItemType) error
+	FindItem(key KeyType) (ItemType, error)
+	Purge()
+	Count() int
 }
 
-type playerList map[string]player.Player
-
-type players struct {
-	allPlayers playerList
+type storage struct {
+	Players storageItems[string, player.Player]
 }
 
-func (players *players) AddNew(name string, password string) error {
-	_, playerAlreadyExists := players.allPlayers[name]
-	if playerAlreadyExists {
-		return errors.New("Cannot create new Player, Player Name already exists.")
-	}
-
-	hashedPassword, err := player.HashPassword(password)
-	if err != nil {
-		return err
-	}
-
-	players.allPlayers[name] = player.Player{
-		Name:           name,
-		HashedPassword: hashedPassword,
-	}
-
-	return nil
+func (s *storage) Purge() {
+	s.Players.Purge()
 }
 
-func (players *players) Purge() {
-	players.allPlayers = make(playerList)
+var InMemoryStorage = storage{
+	Players: NewInMemoryItemList[string, player.Player]("Player"),
 }
