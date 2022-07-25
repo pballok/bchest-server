@@ -1,7 +1,7 @@
 package persist
 
 import (
-	"github.com/pballok/bchest-server/internal/player"
+	"github.com/pballok/bchest-server/pkg/player"
 	"golang.org/x/exp/constraints"
 )
 

@@ -9,8 +9,8 @@ import (
 
 	"github.com/pballok/bchest-server/graph/generated"
 	"github.com/pballok/bchest-server/graph/model"
-	"github.com/pballok/bchest-server/internal/player"
 	"github.com/pballok/bchest-server/pkg/persist"
+	"github.com/pballok/bchest-server/pkg/player"
 )
 
 func (r *mutationResolver) CreatePlayer(ctx context.Context, input model.PlayerInput) (*model.Player, error) {
