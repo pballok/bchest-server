@@ -5,21 +5,29 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-type storageItems[KeyType constraints.Ordered, ItemType any] interface {
-	AddNewItem(key KeyType, item *ItemType) error
-	FindItem(key KeyType) (ItemType, error)
+type persistedTable[KeyType constraints.Ordered, ItemType any] interface {
+	AddNew(key KeyType, item *ItemType) error
+	Find(key KeyType) (ItemType, error)
 	Purge()
 	Count() int
 }
 
-type storage struct {
-	Players storageItems[string, player.Player]
+type allPersistedTables struct {
+	players persistedTable[string, player.Player]
 }
 
-func (s *storage) Purge() {
-	s.Players.Purge()
+func (s *allPersistedTables) Players() persistedTable[string, player.Player] {
+	return s.players
 }
 
-var InMemoryStorage = storage{
-	Players: NewInMemoryItemList[string, player.Player]("Player"),
+func (s *allPersistedTables) Purge() {
+	s.players.Purge()
 }
+
+type storage interface {
+	Init() bool
+	Purge()
+	Players() persistedTable[string, player.Player]
+}
+
+var Storage storage = &inMemoryStorage

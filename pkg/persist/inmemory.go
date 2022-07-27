@@ -3,22 +3,23 @@ package persist
 import (
 	"fmt"
 
+	"github.com/pballok/bchest-server/pkg/player"
 	"golang.org/x/exp/constraints"
 )
 
-func NewInMemoryItemList[KeyType constraints.Ordered, ItemType any](itemName string) *inMemoryItemList[KeyType, ItemType] {
-	return &inMemoryItemList[KeyType, ItemType]{
+func newInMemoryTable[KeyType constraints.Ordered, ItemType any](itemName string) *inMemoryTable[KeyType, ItemType] {
+	return &inMemoryTable[KeyType, ItemType]{
 		name:  itemName,
 		items: map[KeyType]ItemType{},
 	}
 }
 
-type inMemoryItemList[KeyType constraints.Ordered, ItemType any] struct {
+type inMemoryTable[KeyType constraints.Ordered, ItemType any] struct {
 	name  string
 	items map[KeyType]ItemType
 }
 
-func (i *inMemoryItemList[KeyType, ItemType]) AddNewItem(key KeyType, item *ItemType) error {
+func (i *inMemoryTable[KeyType, ItemType]) AddNew(key KeyType, item *ItemType) error {
 	_, itemAlreadyExists := i.items[key]
 	if itemAlreadyExists {
 		return fmt.Errorf("Cannot store new %s, because same Key already exists: %v", i.name, key)
@@ -29,7 +30,7 @@ func (i *inMemoryItemList[KeyType, ItemType]) AddNewItem(key KeyType, item *Item
 	return nil
 }
 
-func (i *inMemoryItemList[KeyType, ItemType]) FindItem(key KeyType) (ItemType, error) {
+func (i *inMemoryTable[KeyType, ItemType]) Find(key KeyType) (ItemType, error) {
 	item, exists := i.items[key]
 	if !exists {
 		var emptyItem ItemType
@@ -39,10 +40,20 @@ func (i *inMemoryItemList[KeyType, ItemType]) FindItem(key KeyType) (ItemType, e
 	return item, nil
 }
 
-func (i *inMemoryItemList[KeyType, ItemType]) Purge() {
+func (i *inMemoryTable[KeyType, ItemType]) Purge() {
 	i.items = make(map[KeyType]ItemType)
 }
 
-func (i *inMemoryItemList[KeyType, ItemType]) Count() int {
+func (i *inMemoryTable[KeyType, ItemType]) Count() int {
 	return len(i.items)
+}
+
+type inMemoryStorageType = allPersistedTables
+
+func (s *inMemoryStorageType) Init() bool {
+	return true
+}
+
+var inMemoryStorage = inMemoryStorageType{
+	players: newInMemoryTable[string, player.Player]("Player"),
 }
