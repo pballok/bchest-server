@@ -3,6 +3,7 @@ package persist
 import (
 	"fmt"
 
+	"github.com/pballok/bchest-server/pkg/character"
 	"github.com/pballok/bchest-server/pkg/player"
 	"golang.org/x/exp/constraints"
 )
@@ -51,9 +52,14 @@ func (i *inMemoryTable[KeyType, ItemType]) Count() int {
 type inMemoryStorageType = allPersistedTables
 
 func (s *inMemoryStorageType) Init() bool {
+	// Temporary init code below
+	tempPlayer, _ := player.NewPlayer("pballok", "whatever")
+	s.players.AddNew(tempPlayer.Name, tempPlayer)
+
 	return true
 }
 
 var inMemoryStorage = inMemoryStorageType{
-	players: newInMemoryTable[string, player.Player]("Player"),
+	players:    newInMemoryTable[string, player.Player]("Player"),
+	characters: newInMemoryTable[string, character.Character]("Character"),
 }

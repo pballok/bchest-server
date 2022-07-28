@@ -9,13 +9,15 @@ import (
 
 	"github.com/pballok/bchest-server/graph/generated"
 	"github.com/pballok/bchest-server/graph/model"
+	"github.com/pballok/bchest-server/pkg/auth"
+	"github.com/pballok/bchest-server/pkg/character"
 	"github.com/pballok/bchest-server/pkg/persist"
 	"github.com/pballok/bchest-server/pkg/player"
 )
 
 func (r *mutationResolver) CreatePlayer(ctx context.Context, input model.PlayerInput) (*model.Player, error) {
 	player, err := player.NewPlayer(input.Name, input.Password)
-	err = persist.Storage.Players().AddNewItem(input.Name, player)
+	err = persist.Storage.Players().AddNew(input.Name, player)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +26,22 @@ func (r *mutationResolver) CreatePlayer(ctx context.Context, input model.PlayerI
 }
 
 func (r *mutationResolver) CreateCharacter(ctx context.Context, input model.CharacterInput) (*model.Character, error) {
-	panic(fmt.Errorf("not implemented"))
+	currentPlayer, ok := auth.GetPlayerFromContext(ctx)
+	if !ok || currentPlayer.Name == "" {
+		return nil, fmt.Errorf("Unauthorized request!")
+	}
+	newCharacter := character.NewCharacter(currentPlayer.Name, input.Name, input.Description)
+	err := persist.Storage.Characters().AddNew(input.Name, newCharacter)
+	if err != nil {
+		return nil, err
+	}
+	return &model.Character{
+		Name:        newCharacter.Name,
+		Description: &newCharacter.Description,
+		Player: &model.Player{
+			Name: currentPlayer.Name,
+		},
+	}, nil
 }
 
 func (r *mutationResolver) Login(ctx context.Context, input model.LoginInput) (string, error) {

@@ -7,7 +7,6 @@ input PlayerInput {
   password: String!
 }
 
-
 type Character {
   name: String!
   player: Player
