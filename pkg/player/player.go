@@ -1,23 +1,40 @@
 package player
 
 import (
+	"fmt"
+
+	"github.com/pballok/bchest-server/graph/model"
+	"github.com/pballok/bchest-server/pkg/persist"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Player struct {
-	Name           string `json:"name"`
-	HashedPassword string `json:"password"`
+	persist.PlayerData
 }
 
 func NewPlayer(name string, password string) (*Player, error) {
 	hashedPassword, err := hashPassword(password)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Cannot create new Player: %w", err)
 	}
 	return &Player{
-		Name:           name,
-		HashedPassword: hashedPassword,
+		PlayerData: persist.PlayerData{
+			Name:           name,
+			HashedPassword: hashedPassword,
+		},
 	}, nil
+}
+
+func WithData(data *persist.PlayerData) *Player {
+	return &Player{
+		PlayerData: *data,
+	}
+}
+
+func (p *Player) GetModel() *model.Player {
+	return &model.Player{
+		Name: p.Name,
+	}
 }
 
 func hashPassword(password string) (string, error) {
