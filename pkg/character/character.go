@@ -38,12 +38,6 @@ func NewCharacter(name string, playerName *string, description *string) (*Charac
 	return &newCharacter, nil
 }
 
-func WithData(data *persist.CharacterData) *Character {
-	return &Character{
-		CharacterData: *data,
-	}
-}
-
 func (c *Character) GetModel() *model.Character {
 	modelCharacter := model.Character{
 		Name:        c.Name,
@@ -59,4 +53,10 @@ func (c *Character) GetModel() *model.Character {
 		modelCharacter.Player = player.WithData(&playerData).GetModel()
 	}
 	return &modelCharacter
+}
+
+func WithData(data *persist.CharacterData) *Character {
+	return &Character{
+		CharacterData: *data,
+	}
 }

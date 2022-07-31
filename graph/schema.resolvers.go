@@ -53,10 +53,6 @@ func (r *mutationResolver) RefreshToken(ctx context.Context, input model.Refresh
 }
 
 func (r *queryResolver) GetCharacter(ctx context.Context, name string) (*model.Character, error) {
-	currentPlayer, ok := auth.GetPlayerFromContext(ctx)
-	if !ok || currentPlayer.Name == "" {
-		return nil, fmt.Errorf("Unauthorized request!")
-	}
 	characterData, err := persist.Storage.Characters().Find(name)
 	if err != nil {
 		return nil, fmt.Errorf("Character not found.")

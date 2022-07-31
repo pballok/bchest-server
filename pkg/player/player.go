@@ -25,15 +25,15 @@ func NewPlayer(name string, password string) (*Player, error) {
 	}, nil
 }
 
-func WithData(data *persist.PlayerData) *Player {
-	return &Player{
-		PlayerData: *data,
-	}
-}
-
 func (p *Player) GetModel() *model.Player {
 	return &model.Player{
 		Name: p.Name,
+	}
+}
+
+func WithData(data *persist.PlayerData) *Player {
+	return &Player{
+		PlayerData: *data,
 	}
 }
 

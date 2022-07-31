@@ -4,35 +4,24 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-type persistedTable[KeyType constraints.Ordered, ItemType any] interface {
+type genericStorageTable[KeyType constraints.Ordered, ItemType any] interface {
 	AddNew(key KeyType, item *ItemType) error
 	Find(key KeyType) (ItemType, error)
-	Purge()
 	Count() int
 }
 
-type allPersistedTables struct {
-	players    persistedTable[string, PlayerData]
-	characters persistedTable[string, CharacterData]
+type playerStorage interface {
+	genericStorageTable[string, PlayerData]
 }
 
-func (s *allPersistedTables) Purge() {
-	s.players.Purge()
-}
-
-func (s *allPersistedTables) Players() persistedTable[string, PlayerData] {
-	return s.players
-}
-
-func (s *allPersistedTables) Characters() persistedTable[string, CharacterData] {
-	return s.characters
+type characterStorage interface {
+	genericStorageTable[string, CharacterData]
 }
 
 type storage interface {
 	Init() bool
-	Purge()
-	Players() persistedTable[string, PlayerData]
-	Characters() persistedTable[string, CharacterData]
+	Players() playerStorage
+	Characters() characterStorage
 }
 
 var Storage storage = &inMemoryStorage

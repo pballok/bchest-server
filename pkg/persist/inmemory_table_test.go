@@ -2,7 +2,16 @@ package persist
 
 import (
 	"testing"
+
+	"golang.org/x/exp/constraints"
 )
+
+func newInMemoryTable[KeyType constraints.Ordered, ItemType any](itemName string) *inMemoryTable[KeyType, ItemType] {
+	return &inMemoryTable[KeyType, ItemType]{
+		name:  itemName,
+		items: map[KeyType]ItemType{},
+	}
+}
 
 type testItem struct {
 	field1 string
@@ -147,27 +156,5 @@ func TestInMemory_FindShouldReturnWithCopy(t *testing.T) {
 	got := storedItem2.field2
 	if want != got {
 		t.Fatalf(`Wring item value: %v. Expected %v`, got, want)
-	}
-}
-
-func TestInMemory_PurgeShouldRemoveAllElements(t *testing.T) {
-	items := newInMemoryTable[int16, testItem]("Test")
-	items.AddNew(1, &testItem{
-		field1: "foo",
-		field2: 2,
-	})
-	items.AddNew(11, &testItem{
-		field1: "bar",
-		field2: 22,
-	})
-	items.AddNew(111, &testItem{
-		field1: "baz",
-		field2: 222,
-	})
-	items.Purge()
-	want := 0
-	got := items.Count()
-	if want != got {
-		t.Fatalf(`Wring item count: %v. Expected %v`, got, want)
 	}
 }
