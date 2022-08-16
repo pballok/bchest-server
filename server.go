@@ -8,8 +8,8 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/pballok/bchest-server/graph"
 	"github.com/pballok/bchest-server/graph/generated"
-	"github.com/pballok/bchest-server/pkg/auth"
-	"github.com/pballok/bchest-server/pkg/persist"
+	"github.com/pballok/bchest-server/internal/auth"
+	"github.com/pballok/bchest-server/internal/persist"
 )
 
 const defaultPort = "8080"

@@ -1,9 +1,4 @@
-package persist
-
-type PlayerData struct {
-	Name           string `json:"name"`
-	HashedPassword string `json:"password"`
-}
+package datatypes
 
 type CharacterData struct {
 	Name        string `json:"name"`

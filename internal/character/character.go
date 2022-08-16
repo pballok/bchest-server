@@ -4,17 +4,18 @@ import (
 	"fmt"
 
 	"github.com/pballok/bchest-server/graph/model"
-	"github.com/pballok/bchest-server/pkg/persist"
-	"github.com/pballok/bchest-server/pkg/player"
+	"github.com/pballok/bchest-server/internal/persist"
+	"github.com/pballok/bchest-server/internal/persist/datatypes"
+	"github.com/pballok/bchest-server/internal/player"
 )
 
 type Character struct {
-	persist.CharacterData
+	datatypes.CharacterData
 }
 
 func NewCharacter(name string, playerName *string, description *string) (*Character, error) {
 	newCharacter := Character{
-		CharacterData: persist.CharacterData{
+		CharacterData: datatypes.CharacterData{
 			Name: name,
 		},
 	}
@@ -50,12 +51,12 @@ func (c *Character) GetModel() *model.Character {
 		if err != nil {
 			return &model.Character{}
 		}
-		modelCharacter.Player = player.WithData(&playerData).GetModel()
+		modelCharacter.Player = player.FromData(&playerData).GetModel()
 	}
 	return &modelCharacter
 }
 
-func WithData(data *persist.CharacterData) *Character {
+func FromData(data *datatypes.CharacterData) *Character {
 	return &Character{
 		CharacterData: *data,
 	}

@@ -9,10 +9,10 @@ import (
 
 	"github.com/pballok/bchest-server/graph/generated"
 	"github.com/pballok/bchest-server/graph/model"
-	"github.com/pballok/bchest-server/pkg/auth"
-	"github.com/pballok/bchest-server/pkg/character"
-	"github.com/pballok/bchest-server/pkg/persist"
-	"github.com/pballok/bchest-server/pkg/player"
+	"github.com/pballok/bchest-server/internal/auth"
+	"github.com/pballok/bchest-server/internal/character"
+	"github.com/pballok/bchest-server/internal/persist"
+	"github.com/pballok/bchest-server/internal/player"
 )
 
 func (r *mutationResolver) CreatePlayer(ctx context.Context, input model.PlayerInput) (*model.Player, error) {
@@ -57,7 +57,7 @@ func (r *queryResolver) GetCharacter(ctx context.Context, name string) (*model.C
 	if err != nil {
 		return nil, fmt.Errorf("Character not found.")
 	}
-	return character.WithData(&characterData).GetModel(), nil
+	return character.FromData(&characterData).GetModel(), nil
 }
 
 func (r *queryResolver) ListCharacters(ctx context.Context, player string) ([]*model.Character, error) {

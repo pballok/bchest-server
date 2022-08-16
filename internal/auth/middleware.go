@@ -4,8 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/pballok/bchest-server/pkg/persist"
-	"github.com/pballok/bchest-server/pkg/player"
+	"github.com/pballok/bchest-server/internal/persist"
+	"github.com/pballok/bchest-server/internal/persist/datatypes"
+	"github.com/pballok/bchest-server/internal/player"
 )
 
 type contextKeyType string
@@ -26,9 +27,9 @@ func Middleware(next http.Handler) http.Handler {
 }
 
 func GetPlayerFromContext(ctx context.Context) (player.Player, bool) {
-	playerData, ok := ctx.Value(contextPlayerKey).(persist.PlayerData)
+	playerData, ok := ctx.Value(contextPlayerKey).(datatypes.PlayerData)
 	if !ok {
 		return player.Player{}, ok
 	}
-	return *player.WithData(&playerData), true
+	return *player.FromData(&playerData), true
 }

@@ -1,4 +1,4 @@
-package persist
+package inmemory
 
 import (
 	"fmt"
@@ -6,12 +6,12 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-type inMemoryTable[KeyType constraints.Ordered, ItemType any] struct {
+type table[KeyType constraints.Ordered, ItemType any] struct {
 	name  string
 	items map[KeyType]ItemType
 }
 
-func (i inMemoryTable[KeyType, ItemType]) AddNew(key KeyType, item *ItemType) error {
+func (i table[KeyType, ItemType]) AddNew(key KeyType, item *ItemType) error {
 	_, itemAlreadyExists := i.items[key]
 	if itemAlreadyExists {
 		return fmt.Errorf("Cannot store new %s, because same Key already exists: %v", i.name, key)
@@ -22,7 +22,7 @@ func (i inMemoryTable[KeyType, ItemType]) AddNew(key KeyType, item *ItemType) er
 	return nil
 }
 
-func (i inMemoryTable[KeyType, ItemType]) Find(key KeyType) (ItemType, error) {
+func (i table[KeyType, ItemType]) Find(key KeyType) (ItemType, error) {
 	item, exists := i.items[key]
 	if !exists {
 		var emptyItem ItemType
@@ -32,6 +32,6 @@ func (i inMemoryTable[KeyType, ItemType]) Find(key KeyType) (ItemType, error) {
 	return item, nil
 }
 
-func (i inMemoryTable[KeyType, ItemType]) Count() int {
+func (i table[KeyType, ItemType]) Count() int {
 	return len(i.items)
 }

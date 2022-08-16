@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"github.com/pballok/bchest-server/graph/model"
-	"github.com/pballok/bchest-server/pkg/persist"
+	"github.com/pballok/bchest-server/internal/persist/datatypes"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Player struct {
-	persist.PlayerData
+	datatypes.PlayerData
 }
 
 func NewPlayer(name string, password string) (*Player, error) {
@@ -18,7 +18,7 @@ func NewPlayer(name string, password string) (*Player, error) {
 		return nil, fmt.Errorf("Cannot create new Player: %w", err)
 	}
 	return &Player{
-		PlayerData: persist.PlayerData{
+		PlayerData: datatypes.PlayerData{
 			Name:           name,
 			HashedPassword: hashedPassword,
 		},
@@ -31,7 +31,7 @@ func (p *Player) GetModel() *model.Player {
 	}
 }
 
-func WithData(data *persist.PlayerData) *Player {
+func FromData(data *datatypes.PlayerData) *Player {
 	return &Player{
 		PlayerData: *data,
 	}

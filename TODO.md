@@ -9,16 +9,3 @@ https://github.com/99designs/gqlgen/blob/master/_examples/todo/todo_test.go
 
 Authentication:
 https://www.howtographql.com/graphql-go/6-authentication/
-
-
-*** DEVELOPMENT ***
-start with: go run server.go
-
-send requests to localhost:8080/query
-Example request:
-query {
-    listCharacters (player: "Player1") {
-        name
-        description
-    }
-}
