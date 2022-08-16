@@ -61,7 +61,12 @@ func (r *queryResolver) GetCharacter(ctx context.Context, name string) (*model.C
 }
 
 func (r *queryResolver) ListCharacters(ctx context.Context, player string) ([]*model.Character, error) {
-	panic(fmt.Errorf("not implemented"))
+	characterModels := []*model.Character{}
+	characters := persist.Storage.Characters().ListByPlayer(player)
+	for _, c := range characters {
+		characterModels = append(characterModels, character.FromData(&c).GetModel())
+	}
+	return characterModels, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

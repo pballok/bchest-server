@@ -6,8 +6,8 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-func newInMemoryTable[KeyType constraints.Ordered, ItemType any](itemName string) *table[KeyType, ItemType] {
-	return &table[KeyType, ItemType]{
+func newInMemoryTable[KeyType constraints.Ordered, ItemType any](itemName string) table[KeyType, ItemType] {
+	return table[KeyType, ItemType]{
 		name:  itemName,
 		items: map[KeyType]ItemType{},
 	}

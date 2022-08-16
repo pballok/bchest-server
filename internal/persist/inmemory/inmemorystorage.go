@@ -5,20 +5,6 @@ import (
 	"github.com/pballok/bchest-server/internal/persist/interfaces"
 )
 
-type playerStorage struct {
-	table[string, datatypes.PlayerData]
-}
-
-type characterStorage struct {
-	table[string, datatypes.CharacterData]
-}
-
-func (s characterStorage) ListByPlayer(playerName string) []datatypes.CharacterData {
-	characters := []datatypes.CharacterData{}
-
-	return characters
-}
-
 type storageType struct {
 	players    playerStorage
 	characters characterStorage
