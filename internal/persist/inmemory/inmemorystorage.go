@@ -31,13 +31,9 @@ func (s *storageType) Characters() interfaces.CharacterStorage {
 
 var InMemoryStorage = storageType{
 	players: playerStorage{
-		table: table[string, datatypes.PlayerData]{
-			name: "Players",
-		},
+		table: newTable[string, datatypes.PlayerData]("Players"),
 	},
 	characters: characterStorage{
-		table: table[string, datatypes.CharacterData]{
-			name: "Characters",
-		},
+		table: newTable[string, datatypes.CharacterData]("Characters"),
 	},
 }

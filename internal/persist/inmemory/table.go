@@ -35,3 +35,10 @@ func (i table[KeyType, ItemType]) Find(key KeyType) (ItemType, error) {
 func (i table[KeyType, ItemType]) Count() int {
 	return len(i.items)
 }
+
+func newTable[KeyType constraints.Ordered, ItemType any](itemName string) table[KeyType, ItemType] {
+	return table[KeyType, ItemType]{
+		name:  itemName,
+		items: map[KeyType]ItemType{},
+	}
+}

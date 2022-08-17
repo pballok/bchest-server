@@ -2,16 +2,7 @@ package inmemory
 
 import (
 	"testing"
-
-	"golang.org/x/exp/constraints"
 )
-
-func newInMemoryTable[KeyType constraints.Ordered, ItemType any](itemName string) table[KeyType, ItemType] {
-	return table[KeyType, ItemType]{
-		name:  itemName,
-		items: map[KeyType]ItemType{},
-	}
-}
 
 type testItem struct {
 	field1 string
@@ -19,7 +10,7 @@ type testItem struct {
 }
 
 func TestInMemory_NewListShouldHaveZeroLength(t *testing.T) {
-	items := newInMemoryTable[int16, testItem]("Test")
+	items := newTable[int16, testItem]("Test")
 	want := 0
 	got := items.Count()
 	if want != got {
@@ -28,7 +19,7 @@ func TestInMemory_NewListShouldHaveZeroLength(t *testing.T) {
 }
 
 func TestInMemory_AddingANewKeyShouldIncreaseCount(t *testing.T) {
-	items := newInMemoryTable[int16, testItem]("Test")
+	items := newTable[int16, testItem]("Test")
 	err := items.AddNew(1, &testItem{
 		field1: "foo",
 		field2: 2,
@@ -57,7 +48,7 @@ func TestInMemory_AddingANewKeyShouldIncreaseCount(t *testing.T) {
 }
 
 func TestInMemory_AddingTheSameKeyAgainShouldFail(t *testing.T) {
-	items := newInMemoryTable[int16, testItem]("Test")
+	items := newTable[int16, testItem]("Test")
 	err := items.AddNew(1, &testItem{
 		field1: "foo",
 		field2: 2,
@@ -80,7 +71,7 @@ func TestInMemory_AddingTheSameKeyAgainShouldFail(t *testing.T) {
 }
 
 func TestInMemory_FindingExistingItemShouldSucceed(t *testing.T) {
-	items := newInMemoryTable[int16, testItem]("Test")
+	items := newTable[int16, testItem]("Test")
 	items.AddNew(1, &testItem{
 		field1: "foo",
 		field2: 2,
@@ -107,7 +98,7 @@ func TestInMemory_FindingExistingItemShouldSucceed(t *testing.T) {
 }
 
 func TestInMemory_FindingNonExistingItemShouldReturnWithError(t *testing.T) {
-	items := newInMemoryTable[int16, testItem]("Test")
+	items := newTable[int16, testItem]("Test")
 	items.AddNew(1, &testItem{
 		field1: "foo",
 		field2: 2,
@@ -127,7 +118,7 @@ func TestInMemory_FindingNonExistingItemShouldReturnWithError(t *testing.T) {
 }
 
 func TestInMemory_ShouldStoreCopy(t *testing.T) {
-	items := newInMemoryTable[int16, testItem]("Test")
+	items := newTable[int16, testItem]("Test")
 	item := &testItem{
 		field1: "foo",
 		field2: 2,
@@ -144,7 +135,7 @@ func TestInMemory_ShouldStoreCopy(t *testing.T) {
 }
 
 func TestInMemory_FindShouldReturnWithCopy(t *testing.T) {
-	items := newInMemoryTable[int16, testItem]("Test")
+	items := newTable[int16, testItem]("Test")
 	items.AddNew(1, &testItem{
 		field1: "foo",
 		field2: 2,

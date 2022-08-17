@@ -6,35 +6,37 @@ import (
 	"github.com/pballok/bchest-server/internal/persist/datatypes"
 )
 
-var testStorage = characterStorage{
-	table: newInMemoryTable[string, datatypes.CharacterData]("Characters"),
-}
+func newTestCharacterStorage() *characterStorage {
+	storage := characterStorage{
+		table: newTable[string, datatypes.CharacterData]("Characters"),
+	}
 
-func setupTestCharacterStorage() {
-	testStorage.AddNew("Character1", &datatypes.CharacterData{
+	storage.AddNew("Character1", &datatypes.CharacterData{
 		Name:       "Character1",
 		PlayerName: "Player1",
 	})
-	testStorage.AddNew("Character2", &datatypes.CharacterData{
+	storage.AddNew("Character2", &datatypes.CharacterData{
 		Name:       "Character2",
 		PlayerName: "Player2",
 	})
-	testStorage.AddNew("Character3", &datatypes.CharacterData{
+	storage.AddNew("Character3", &datatypes.CharacterData{
 		Name:       "Character3",
 		PlayerName: "",
 	})
-	testStorage.AddNew("Character4", &datatypes.CharacterData{
+	storage.AddNew("Character4", &datatypes.CharacterData{
 		Name:       "Character4",
 		PlayerName: "Player1",
 	})
-	testStorage.AddNew("Character5", &datatypes.CharacterData{
+	storage.AddNew("Character5", &datatypes.CharacterData{
 		Name:       "Character5",
 		PlayerName: "",
 	})
+
+	return &storage
 }
 
 func TestInMemoryCharacterStorage_ListByPlayerShouldReturnTheCharacters(t *testing.T) {
-	setupTestCharacterStorage()
+	testStorage := newTestCharacterStorage()
 
 	filteredCharacters := testStorage.ListByPlayer("Player1")
 	want := 2
