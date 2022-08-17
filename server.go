@@ -8,6 +8,8 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/pballok/bchest-server/graph"
 	"github.com/pballok/bchest-server/graph/generated"
+	"github.com/pballok/bchest-server/internal/auth"
+	"github.com/pballok/bchest-server/internal/persist"
 )
 
 const defaultPort = "8080"
@@ -18,9 +20,11 @@ func main() {
 		port = defaultPort
 	}
 
+	persist.Storage.Init()
+
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
-	http.Handle("/query", srv)
+	http.Handle("/query", auth.Middleware(srv))
 
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

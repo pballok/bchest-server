@@ -1,4 +1,4 @@
-package persist
+package inmemory
 
 import (
 	"testing"
@@ -10,7 +10,7 @@ type testItem struct {
 }
 
 func TestInMemory_NewListShouldHaveZeroLength(t *testing.T) {
-	items := NewInMemoryItemList[int16, testItem]("Test")
+	items := newTable[int16, testItem]("Test")
 	want := 0
 	got := items.Count()
 	if want != got {
@@ -19,8 +19,8 @@ func TestInMemory_NewListShouldHaveZeroLength(t *testing.T) {
 }
 
 func TestInMemory_AddingANewKeyShouldIncreaseCount(t *testing.T) {
-	items := NewInMemoryItemList[int16, testItem]("Test")
-	err := items.AddNewItem(1, &testItem{
+	items := newTable[int16, testItem]("Test")
+	err := items.AddNew(1, &testItem{
 		field1: "foo",
 		field2: 2,
 	})
@@ -33,7 +33,7 @@ func TestInMemory_AddingANewKeyShouldIncreaseCount(t *testing.T) {
 		t.Fatalf(`Received error while adding first new item`)
 	}
 
-	err = items.AddNewItem(11, &testItem{
+	err = items.AddNew(11, &testItem{
 		field1: "bar",
 		field2: 22,
 	})
@@ -48,15 +48,15 @@ func TestInMemory_AddingANewKeyShouldIncreaseCount(t *testing.T) {
 }
 
 func TestInMemory_AddingTheSameKeyAgainShouldFail(t *testing.T) {
-	items := NewInMemoryItemList[int16, testItem]("Test")
-	err := items.AddNewItem(1, &testItem{
+	items := newTable[int16, testItem]("Test")
+	err := items.AddNew(1, &testItem{
 		field1: "foo",
 		field2: 2,
 	})
 	if err != nil {
 		t.Fatalf(`Received error while adding first new item`)
 	}
-	err = items.AddNewItem(1, &testItem{
+	err = items.AddNew(1, &testItem{
 		field1: "foo",
 		field2: 22,
 	})
@@ -71,20 +71,20 @@ func TestInMemory_AddingTheSameKeyAgainShouldFail(t *testing.T) {
 }
 
 func TestInMemory_FindingExistingItemShouldSucceed(t *testing.T) {
-	items := NewInMemoryItemList[int16, testItem]("Test")
-	items.AddNewItem(1, &testItem{
+	items := newTable[int16, testItem]("Test")
+	items.AddNew(1, &testItem{
 		field1: "foo",
 		field2: 2,
 	})
-	items.AddNewItem(11, &testItem{
+	items.AddNew(11, &testItem{
 		field1: "bar",
 		field2: 22,
 	})
-	items.AddNewItem(111, &testItem{
+	items.AddNew(111, &testItem{
 		field1: "baz",
 		field2: 222,
 	})
-	got, err := items.FindItem(11)
+	got, err := items.Find(11)
 	want := testItem{
 		field1: "bar",
 		field2: 22,
@@ -98,35 +98,35 @@ func TestInMemory_FindingExistingItemShouldSucceed(t *testing.T) {
 }
 
 func TestInMemory_FindingNonExistingItemShouldReturnWithError(t *testing.T) {
-	items := NewInMemoryItemList[int16, testItem]("Test")
-	items.AddNewItem(1, &testItem{
+	items := newTable[int16, testItem]("Test")
+	items.AddNew(1, &testItem{
 		field1: "foo",
 		field2: 2,
 	})
-	items.AddNewItem(11, &testItem{
+	items.AddNew(11, &testItem{
 		field1: "bar",
 		field2: 22,
 	})
-	items.AddNewItem(111, &testItem{
+	items.AddNew(111, &testItem{
 		field1: "baz",
 		field2: 222,
 	})
-	_, err := items.FindItem(2)
+	_, err := items.Find(2)
 	if err == nil {
 		t.Fatalf(`Should have received error while finding a non-existing item`)
 	}
 }
 
 func TestInMemory_ShouldStoreCopy(t *testing.T) {
-	items := NewInMemoryItemList[int16, testItem]("Test")
+	items := newTable[int16, testItem]("Test")
 	item := &testItem{
 		field1: "foo",
 		field2: 2,
 	}
-	items.AddNewItem(1, item)
+	items.AddNew(1, item)
 	item.field2 = 3
 
-	storedItem, _ := items.FindItem(1)
+	storedItem, _ := items.Find(1)
 	want := 2
 	got := storedItem.field2
 	if want != got {
@@ -135,39 +135,17 @@ func TestInMemory_ShouldStoreCopy(t *testing.T) {
 }
 
 func TestInMemory_FindShouldReturnWithCopy(t *testing.T) {
-	items := NewInMemoryItemList[int16, testItem]("Test")
-	items.AddNewItem(1, &testItem{
+	items := newTable[int16, testItem]("Test")
+	items.AddNew(1, &testItem{
 		field1: "foo",
 		field2: 2,
 	})
-	storedItem1, _ := items.FindItem(1)
-	storedItem2, _ := items.FindItem(1)
+	storedItem1, _ := items.Find(1)
+	storedItem2, _ := items.Find(1)
 	storedItem1.field2 = 3
 	want := 2
 	got := storedItem2.field2
 	if want != got {
 		t.Fatalf(`Wring item value: %v. Expected %v`, got, want)
-	}
-}
-
-func TestInMemory_PurgeShouldRemoveAllElements(t *testing.T) {
-	items := NewInMemoryItemList[int16, testItem]("Test")
-	items.AddNewItem(1, &testItem{
-		field1: "foo",
-		field2: 2,
-	})
-	items.AddNewItem(11, &testItem{
-		field1: "bar",
-		field2: 22,
-	})
-	items.AddNewItem(111, &testItem{
-		field1: "baz",
-		field2: 222,
-	})
-	items.Purge()
-	want := 0
-	got := items.Count()
-	if want != got {
-		t.Fatalf(`Wring item count: %v. Expected %v`, got, want)
 	}
 }

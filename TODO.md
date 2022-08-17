@@ -7,15 +7,5 @@ https://servian.dev/building-a-graphql-api-in-go-using-gqlgen-f7a42eba2193
 Example for GraphQL unit test:
 https://github.com/99designs/gqlgen/blob/master/_examples/todo/todo_test.go
 
-
-*** DEVELOPMENT ***
-start with: go run server.go
-
-send requests to localhost:8080/query
-Example request:
-query {
-    listCharacters (player: "Player1") {
-        name
-        description
-    }
-}
+Authentication:
+https://www.howtographql.com/graphql-go/6-authentication/
